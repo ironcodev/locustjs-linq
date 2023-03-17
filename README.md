@@ -1,2 +1,2 @@
 # locustjs-linq
- library that Implements .NET LINQ in Javascript
+ A library that resembles .NET LINQ methods in Javascript.

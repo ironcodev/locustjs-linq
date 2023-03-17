@@ -1,0 +1,39 @@
+{
+  "name": "@locustjs/linq",
+  "version": "1.0.0",
+  "description": "A library that resembles .NET LINQ methods in Javascript",
+  "main": "index.cjs.js",
+  "module": "index.esm.js",
+  "scripts": {
+    "build": "babel index.esm.js -o index.cjs.js",
+    "test": "jest",
+    "mest": "node -r esm ./tests/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ironcodev/locustjs-linq.git"
+  },
+  "keywords": [
+    "javascript",
+    "linq",
+    "locustjs"
+  ],
+  "author": "Iron Code",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ironcodev/locustjs-linq/issues"
+  },
+  "homepage": "https://github.com/ironcodev/locustjs-linq#readme",
+  "dependencies": {
+    "locustjs-base": "^1.0.12"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.21.2",
+    "@babel/preset-env": "^7.20.2",
+    "babel-jest": "^29.5.0",
+    "esm": "^3.2.25",
+    "jest": "^29.5.0"
+  }
+}
