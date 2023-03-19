@@ -24,9 +24,6 @@
     "url": "https://github.com/ironcodev/locustjs-linq/issues"
   },
   "homepage": "https://github.com/ironcodev/locustjs-linq#readme",
-  "dependencies": {
-    "locustjs-base": "^1.0.12"
-  },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.3",
@@ -35,5 +32,8 @@
     "babel-jest": "^29.5.0",
     "esm": "^3.2.25",
     "jest": "^29.5.0"
+  },
+  "dependencies": {
+    "@locustjs/base": "^1.0.13"
   }
 }

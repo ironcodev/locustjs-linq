@@ -5,13 +5,13 @@ specifiers:
   '@babel/core': ^7.21.3
   '@babel/plugin-transform-modules-commonjs': ^7.21.2
   '@babel/preset-env': ^7.20.2
+  '@locustjs/base': ^1.0.13
   babel-jest: ^29.5.0
   esm: ^3.2.25
   jest: ^29.5.0
-  locustjs-base: ^1.0.12
 
 dependencies:
-  locustjs-base: 1.0.12
+  '@locustjs/base': 1.0.13
 
 devDependencies:
   '@babel/cli': 7.21.0_@babel+core@7.21.3
@@ -1507,6 +1507,10 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
+  /@locustjs/base/1.0.13:
+    resolution: {integrity: sha512-tjlP2SAaYJbonZkKum4XZjQyeM1WAoDlAerwvdV5i9yHzZipULI3y7MU8kfKrpUNpbaUN4jtV3JcD+2k/HOL2w==}
+    dev: false
+
   /@nicolo-ribaudo/chokidar-2/2.1.8-no-fsevents.3:
     resolution: {integrity: sha512-s88O1aVtXftvp5bCPB7WnmXc5IwOZZ7YPuwNPt+GtOOXpPvad1LfbmjYv+qII7zP6RU2QGnqve27dnLycEnyEQ==}
     requiresBuild: true
@@ -2796,10 +2800,6 @@ packages:
     dependencies:
       p-locate: 4.1.0
     dev: true
-
-  /locustjs-base/1.0.12:
-    resolution: {integrity: sha512-6uVuErbsSPTynQ9Qo3a1Eo9LieVZaxp4obLvzozNkHA+A6z+uShkWBdrto7Er8UpPC3Qxlw4fCfqQiP8vs697w==}
-    dev: false
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
