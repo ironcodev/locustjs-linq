@@ -28,6 +28,27 @@ var data = persons.toEnumerable()
     .leftJoin(personAddress, ({ left }) => left.left.id, pa => pa.person_id)
     .select((p, pb, b, pa) => ({ person_id: pb.person_id, author: p.name, book: b.title, city: pa.city }))
 
+
+left join example:
+[
+  { id: 1, name: 'ali' },
+  { id: 2, name: 'reza' },
+  { id: 3, name: 'saeed' },
+]
+
+[
+  { p_id: 1, city: 'teh' },
+  { p_id: 2, city: 'shz' },
+]
+
+[
+  { left: { id: 1, name: 'ali' }, right: { p_id: 1, city: 'teh' } },
+  { left: { id: 1, name: 'ali' }, right: null },
+  { left: { id: 2, name: 'reza' }, right: null },
+  { left: { id: 2, name: 'reza' }, right: { p_id: 2, city: 'shz' } },
+  { left: { id: 3, name: 'reza' }, right: null },
+  { left: { id: 3, name: 'reza' }, right: null },
+]
 */
 const is_join = Symbol('is_join');
 
@@ -127,31 +148,28 @@ class Enumerable {
       throw `Enumerable.ctor: data is not iterable.`
     }
   }
-  [Symbol.iterator] = function () {
+  [Symbol.iterator]() {
     return new Enumerator(this.data)
   }
-  innerJoin(target, fnLeft, fnRight, comparer) {
-    const data = this.data;
-    const newData = (function* () {
-      for (let left of data) {
-        for (let right of target) {
-          const match = isFunction(comparer) ?
-            comparer(fnLeft(left), fnRight(right))
-            :
-            fnLeft(left) == fnRight(right);
+  *_innerJoin(target, fnLeft, fnRight, comparer) {
+    for (let left of this.data) {
+      for (let right of target) {
+        const match = isFunction(comparer) ?
+          comparer(fnLeft(left), fnRight(right))
+          :
+          fnLeft(left) == fnRight(right);
 
-          if (match) {
-            yield { left, right, [is_join]: true }
-          }
+        if (match) {
+          yield { left, right, [is_join]: true }
         }
       }
-    })();
-
-    return new Enumerable(newData);
+    }
+  }
+  innerJoin(target, fnLeft, fnRight, comparer) {
+    return new Enumerable(this._innerJoin(target, fnLeft, fnRight, comparer));
   }
   leftJoin(target, fnLeft, fnRight, comparer) {
-    const data = this.data;
-    const newData = (function* () {
+    const newData = (function* (data) {
       for (let left of data) {
         for (let right of target) {
           const match = comparer ?
@@ -166,13 +184,12 @@ class Enumerable {
           }
         }
       }
-    })();
+    })(this.data);
 
     return new Enumerable(newData)
   }
   rightJoin(target, fnLeft, fnRight, comparer) {
-    const data = this.data;
-    const newData = (function* () {
+    const newData = (function* (data) {
       for (let left of data) {
         for (let right of target) {
           const match = comparer ?
@@ -187,13 +204,12 @@ class Enumerable {
           }
         }
       }
-    })();
+    })(this.data);
 
     return new Enumerable(newData);
   }
   where(predicate) {
-    const data = this.data;
-    const newData = (function* () {
+    const newData = (function* (data) {
       for (let item of data) {
         const args = unwrap_join(item);
 
@@ -201,19 +217,18 @@ class Enumerable {
           yield item;
         }
       }
-    })();
+    })(this.data);
 
     return new Enumerable(newData);
   }
   select(mapper) {
-    const data = this.data;
-    const newData = (function* () {
+    const newData = (function* (data) {
       for (let item of data) {
         const args = unwrap_join(item);
 
         yield mapper(...args)
       }
-    })();
+    })(this.data);
 
     return new Enumerable(newData);
   }
