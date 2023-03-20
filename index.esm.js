@@ -52,57 +52,6 @@ left join example:
 */
 const is_join = Symbol('is_join');
 
-class EqulityComparer {
-  equals(x, y) {
-
-  }
-}
-
-class Comparer {
-  compare(x, y) {
-
-  }
-}
-
-class LooseEqualityComparer extends EqualityComparer {
-  equals(x, y) {
-    return x == y;
-  }
-}
-
-class TightEqualityComparer extends EqualityComparer {
-  equals(x, y) {
-    return x === y;
-  }
-}
-
-EqulityComparer.Loose = new LooseEqualityComparer();
-EqulityComparer.Tight = new TightEqualityComparer();
-
-class StringOrdinalComparer extends Comparer {
-
-}
-
-class StringOrdinalIgnoreCaseComparer extends Comparer {
-
-}
-
-const stringOrdinalComparer = new StringOrdinalComparer();
-const stringOrdinalIgnoreCaseComparer = new StringOrdinalIgnoreCaseComparer();
-
-const StringComparer = {
-  Ordinal: stringOrdinalComparer,
-  IgnoreCase: stringOrdinalIgnoreCaseComparer
-}
-
-class Comparable {
-  compareTo(x) {
-
-  }
-}
-
-const isComparable = x => x && typeof x.compareTo == 'function';
-
 function unwrap_join(item) {
   let result = []
 
@@ -119,23 +68,23 @@ function unwrap_join(item) {
 class Enumerator {
   constructor(data) {
     if (isIterable(data)) {
-      this.data = data;
+      this._data = data;
     } else {
       throw `Enumerator.ctor: given data is not iterable.`
     }
 
-    this.data = data;
+    this._data = data;
     this.index = 0;
   }
   next() {
-    if (isArray(this.data)) {
-      if (this.index < this.data.length) {
-        return { done: false, value: this.data[this.index++] }
+    if (isArray(this._data)) {
+      if (this.index < this._data.length) {
+        return { done: false, value: this._data[this.index++] }
       } else {
         return { done: true, value: undefined }
       }
     } else {
-      return this.data.next();
+      return this._data.next();
     }
   }
 }
@@ -143,16 +92,16 @@ class Enumerator {
 class Enumerable {
   constructor(data) {
     if (isIterable(data)) {
-      this.data = data;
+      this._data = data;
     } else {
       throw `Enumerable.ctor: data is not iterable.`
     }
   }
   [Symbol.iterator]() {
-    return new Enumerator(this.data)
+    return new Enumerator(this._data)
   }
   *_innerJoin(target, fnLeft, fnRight, comparer) {
-    for (let left of this.data) {
+    for (let left of this._data) {
       for (let right of target) {
         const match = isFunction(comparer) ?
           comparer(fnLeft(left), fnRight(right))
@@ -184,7 +133,7 @@ class Enumerable {
           }
         }
       }
-    })(this.data);
+    })(this._data);
 
     return new Enumerable(newData)
   }
@@ -204,7 +153,7 @@ class Enumerable {
           }
         }
       }
-    })(this.data);
+    })(this._data);
 
     return new Enumerable(newData);
   }
@@ -217,7 +166,7 @@ class Enumerable {
           yield item;
         }
       }
-    })(this.data);
+    })(this._data);
 
     return new Enumerable(newData);
   }
@@ -228,17 +177,17 @@ class Enumerable {
 
         yield mapper(...args)
       }
-    })(this.data);
+    })(this._data);
 
     return new Enumerable(newData);
   }
   count() {
-    if (isArray(this.data)) {
-      return this.data.length;
+    if (isArray(this._data)) {
+      return this._data.length;
     } else {
       let count = 0;
 
-      for (let item of this.data) {
+      for (let item of this._data) {
         count++;
       }
 
@@ -257,17 +206,37 @@ class Enumerable {
   filter() {
 
   }
-  every() {
-
+  all(fn) {
+    return this.every(fn);
   }
-  all() {
+  every(fn) {
+    if (isArray(this._data)) {
+      return this._data.every(fn);
+    } else {
+      for (let item of this._data) {
+        if (!fn(item, this)) {
+          return false;
+        }
+      }
 
+      return true;
+    }
   }
-  any() {
+  any(fn) {
+    if (isArray(this._data)) {
+      return this._data.some(fn);
+    } else {
+      for (let item of this._data) {
+        if (fn(item, this)) {
+          return true;
+        }
+      }
 
+      return false;
+    }
   }
-  some() {
-
+  some(fn) {
+    return this.some(fn);
   }
   first() {
 
@@ -294,9 +263,6 @@ class Enumerable {
 
   }
   forEach() {
-
-  }
-  toArray() {
 
   }
   contains() {
@@ -330,6 +296,18 @@ class Enumerable {
   }
   reverse() {
 
+  }
+  union(x, ignoreErrors) {
+    return this.merge(x, ignoreErrors);
+  }
+  intersect(x, ignoreErrors) {
+    // to be implemented
+  }
+  toArray() {
+    return Array.from(this._data)
+  }
+  clear() {
+    this._data = [];
   }
 }
 
